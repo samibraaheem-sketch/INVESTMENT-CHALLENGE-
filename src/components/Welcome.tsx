@@ -47,7 +47,7 @@ export default function Welcome({ onStart }: Props) {
         <p className="mb-6 text-center text-sm leading-relaxed text-slate-300 sm:text-base">
           Five quick challenges on funding stages, the investor mindset, selecting startups, due diligence and
           pitch decks. Play solo, get instant feedback, and land on the shared leaderboard — about 10–15 minutes,
-          30 minutes max.
+          20 minutes max.
         </p>
 
         {!supabaseConfigured && (

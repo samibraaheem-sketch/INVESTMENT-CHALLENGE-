@@ -31,7 +31,7 @@ function GameApp() {
   const currentStep = STEPS[state.stepIndex]
   const atLastStep = state.stepIndex >= STEPS.length
 
-  // Hard 30-minute cutoff: once time is up, force the finishing flow regardless
+  // Hard 20-minute cutoff: once time is up, force the finishing flow regardless
   // of how many questions remain, so the game always ends gracefully.
   useEffect(() => {
     if (state.phase === 'welcome' || state.phase === 'results' || state.phase === 'finishing') return

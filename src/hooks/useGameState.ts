@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { AnswerResult, FinishResult } from '../lib/gameApi'
 
 const STORAGE_KEY = 'investment-challenge:progress:v1'
-const HARD_LIMIT_SECONDS = 1800
+const HARD_LIMIT_SECONDS = 1200
 
 export type GamePhase = 'welcome' | 'challenge-intro' | 'question' | 'finishing' | 'results'
 
@@ -82,17 +82,26 @@ export function useGameState() {
     return () => clearInterval(interval)
   }, [state.phase])
 
-  const secondsElapsed = state.startedAtMs ? Math.floor((now - state.startedAtMs) / 1000) : 0
+  // Clamped to >= 0: `now` is a state value that only updates once a second
+  // (see the ticking effect below), while `startedAtMs` is stamped fresh at
+  // the exact moment the player clicks Start Game. If that click happens
+  // after `now`'s last tick (e.g. the player spent a few seconds typing
+  // their name before starting), `now - startedAtMs` would briefly go
+  // negative and inflate the displayed remaining time past the 20-minute
+  // cap until the next tick corrects it. Clamping here prevents that.
+  const secondsElapsed = state.startedAtMs ? Math.max(0, Math.floor((now - state.startedAtMs) / 1000)) : 0
   const secondsRemaining = Math.max(0, HARD_LIMIT_SECONDS - secondsElapsed)
   const liveScore = state.answers.reduce((sum, a) => sum + a.pointsAwarded, 0)
 
   const beginGame = useCallback((sessionId: string, playerName: string) => {
+    const startedAtMs = Date.now()
+    setNow(startedAtMs)
     setState({
       ...emptyState(),
       phase: 'challenge-intro',
       sessionId,
       playerName,
-      startedAtMs: Date.now(),
+      startedAtMs,
     })
   }, [])
 
