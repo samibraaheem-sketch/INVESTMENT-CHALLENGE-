@@ -139,6 +139,16 @@ Then `vercel --prod` (or push to the connected branch). You'll get one
 public URL — that's the link to hand to every participant. Everyone plays
 the same URL independently and lands on the same shared leaderboard.
 
+**Important:** Vite bakes `VITE_*` env vars into the build at *build time*,
+not at request time. If you add or change these in the Vercel dashboard
+*after* a deploy already happened, that existing deployment still has the
+old (or missing) values — you must trigger a new deploy (**Deployments →
+⋯ → Redeploy**, or push a commit) for the change to take effect. If you
+ever see the welcome screen show a red "Game unavailable right now"
+banner with the Start Game button disabled, this is almost always the
+cause: the env vars either aren't set on Vercel, or were set after the
+last build.
+
 ## What was tested
 
 Docker wasn't available in the environment this was built in, so a real

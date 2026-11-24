@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { startGameSession } from '../lib/gameApi'
 import { toFriendlyMessage } from '../lib/errors'
+import { supabaseConfigured } from '../lib/supabase'
 
 interface Props {
   onStart: (sessionId: string, playerName: string) => void
@@ -49,6 +50,22 @@ export default function Welcome({ onStart }: Props) {
           30 minutes max.
         </p>
 
+        {!supabaseConfigured && (
+          <div
+            role="alert"
+            className="mb-6 rounded-lg border-2 border-rose-500 bg-rose-500/10 p-4 text-sm text-rose-200"
+          >
+            <p className="mb-1 font-bold">⚠ Game unavailable right now</p>
+            <p className="leading-relaxed">
+              This deployment isn't connected to its server yet, so the game can't start or be graded. If you're the
+              organizer: set <code className="rounded bg-navy-950/60 px-1 py-0.5">VITE_SUPABASE_URL</code> and{' '}
+              <code className="rounded bg-navy-950/60 px-1 py-0.5">VITE_SUPABASE_PUBLISHABLE_KEY</code> in your
+              Vercel project's environment variables, then redeploy (see the README) — Vite bakes these in at build
+              time, so adding them alone isn't enough, the project needs to rebuild.
+            </p>
+          </div>
+        )}
+
         <ul className="mb-6 space-y-2 text-sm text-slate-300">
           <li className="flex items-start gap-2">
             <span className="mt-0.5 text-gold-400">●</span>
@@ -81,10 +98,10 @@ export default function Welcome({ onStart }: Props) {
           {error && <p className="text-sm text-rose-400">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !supabaseConfigured}
             className="w-full rounded-lg bg-gold-500 px-4 py-3 text-base font-semibold text-navy-950 transition hover:bg-gold-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Starting…' : 'Start Game'}
+            {!supabaseConfigured ? 'Game unavailable' : loading ? 'Starting…' : 'Start Game'}
           </button>
         </form>
       </div>
