@@ -46,7 +46,7 @@ export default function Welcome({ onStart }: Props) {
         <h1 className="mb-3 text-center text-3xl font-bold text-white sm:text-4xl">The Investment Challenge</h1>
         <p className="mb-6 text-center text-sm leading-relaxed text-slate-300 sm:text-base">
           Five quick challenges on funding stages, the investor mindset, selecting startups, due diligence and
-          pitch decks. Play solo, get instant feedback, and land on the shared leaderboard — about 20–25 minutes,
+          pitch decks. Play solo, get instant feedback, and land on the shared leaderboard — about 10–15 minutes,
           30 minutes max.
         </p>
 
