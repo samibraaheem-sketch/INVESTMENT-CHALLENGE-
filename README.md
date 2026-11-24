@@ -84,8 +84,11 @@ supabase/schema.sql       Full DB schema: tables, RLS, grading functions, answer
    It's idempotent (safe to re-run) and seeds the 37-item answer key.
 3. Go to **Project Settings → API** and copy:
    - **Project URL**
-   - **anon public** key (never the `service_role` key — that one must
-     never reach the browser)
+   - **Publishable key** (Supabase's current name for the old "anon
+     public" key — same purpose, safe to ship to the browser, every
+     access still goes through RLS). Never the **secret key**
+     (the renamed `service_role` key) — that one must never reach the
+     browser.
 4. (Optional but recommended) In **Database → Replication**, enable
    realtime on the `leaderboard` table so the leaderboard updates live for
    everyone without waiting for the 15-second poll fallback.
@@ -93,19 +96,19 @@ supabase/schema.sql       Full DB schema: tables, RLS, grading functions, answer
 ## 2. Configure the app
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 Fill in:
 
 ```
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-public-key
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
 
-The anon key is safe to ship to the browser by design (that's what RLS is
-for) — but it still belongs in an env var, not hardcoded, so it can differ
-between local/staging/production without a code change.
+The publishable key is safe to ship to the browser by design (that's what
+RLS is for) — but it still belongs in an env var, not hardcoded, so it can
+differ between local/staging/production without a code change.
 
 ```bash
 npm install
@@ -130,7 +133,7 @@ auto-detects Vite. Before the first deploy, add the two env vars under
 Development):
 
 - `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
 
 Then `vercel --prod` (or push to the connected branch). You'll get one
 public URL — that's the link to hand to every participant. Everyone plays
